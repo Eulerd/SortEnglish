@@ -10,6 +10,7 @@ namespace SortEnglish
     {
         private List<string> InputSentence = new List<string>();
         private string[][] words;
+        private string[][] Qwords;
         private string[] Ansers;
         private string[] Questions;
 
@@ -41,16 +42,23 @@ namespace SortEnglish
             int length = InputSentence.Count;
 
             words = new string[length][];
+            Qwords = new string[length][];
             Ansers = new string[length];
             Questions = new string[length];
+
             for (int i = 0; i < length; i++)
             {
                 words[i] = InputSentence[i].Split(' ');
+                Qwords[i] = InputSentence[i].Split(' ');
+
                 Ansers[i] += "A." + (i + 1).ToString() + " ";
+                //一文字目を大文字にする
+                words[i][0] = words[i][0].Substring(0, 1).ToUpper() + words[i][0].Substring(1);
                 for (int j = 0; j < words[i].Length; j++)
                 {
                     words[i][j] = words[i][j].Replace('^', ' ');
-                    if (words[i][j].IndexOf('\'') >= 0) j++;
+                    Qwords[i][j] = Qwords[i][j].Replace('^', ' ');
+                    if (words[i][j].IndexOf('[') >= 0) j++;
                     Ansers[i] += (words[i][j] + " ");
                 }
             }
@@ -79,10 +87,10 @@ namespace SortEnglish
             for (int i = 0; i < length; i++)
             {
                 Questions[i] += "Q." + (i + 1).ToString() + " (/ ";
-                for (int j = 0; j < words[i].Length; j++)
+                for (int j = 0; j < Qwords[i].Length; j++)
                 {
-                    Questions[i] += (words[i][j] + " / ");
-                    if (words[i][j].IndexOf('\'') >= 0) j++;
+                    Questions[i] += (Qwords[i][j] + " / ");
+                    if (Qwords[i][j].IndexOf('[') >= 0) j++;
                 }
                 Questions[i] += ")";
             }
@@ -95,9 +103,9 @@ namespace SortEnglish
 
         private void Swap(int num1, int num2,int i)
         {
-            string word = words[i][num1];
-            words[i][num1] = words[i][num2];
-            words[i][num2] = word;
+            string word = Qwords[i][num1];
+            Qwords[i][num1] = Qwords[i][num2];
+            Qwords[i][num2] = word;
         }
 
 
