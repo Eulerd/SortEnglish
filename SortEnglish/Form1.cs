@@ -87,7 +87,6 @@ namespace SortEnglish
             for (int i = 0; i < words.Length; i++)
             {
                 int l = Qwords[i].Count;
-                words[i][0] = words[i][0].Substring(0, 1).ToUpper() + words[i][0].Substring(1);
                 Swap(0, l - 2,i);
                 for (int j = 0; j < l; j++)
                 {
@@ -100,6 +99,13 @@ namespace SortEnglish
 
                     Swap(num1, num2, i);
                 }
+
+                if (Qwords[i].IndexOf(".") != -1) num1 = Qwords[i].IndexOf(".");
+                else if (Qwords[i].IndexOf("?") != -1) num1 = Qwords[i].IndexOf("?");
+                else num1 = Qwords[i].IndexOf("!");
+
+                if (num1 != l + 1) Swap(num1, l - 1, i);
+                else if (num1 != l + 1) Swap(num1, l - 1, i);
             }
 
 
