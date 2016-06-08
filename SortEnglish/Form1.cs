@@ -56,16 +56,22 @@ namespace SortEnglish
                 //Qwords[i] = InputSentence[i].Split(' ');
 
                 Ansers[i] += "A." + (i + 1).ToString() + " ";
+
+                for (int j = 0; j < words[i].Length; j++)
+                {
+                    words[i][j] = words[i][j].Replace('^', ' ');
+                    Qwords[i][j] = words[i][j];
+                }
                 //一文字目を大文字にする
                 words[i][0] = words[i][0].Substring(0, 1).ToUpper() + words[i][0].Substring(1);
                 for (int j = 0; j < words[i].Length; j++)
                 {
-                    words[i][j] = words[i][j].Replace('^', ' ');
                     if (words[i][j].IndexOf('[') >= 0) j++;
                     Ansers[i] += (words[i][j] + " ");
                 }
 
-                for (int j = 0; j < Qwords[i].Count; j++) Qwords[i][j] = words[i][j];
+                
+                
                 for (int j = 0; j < Qwords[i].Count; j++)
                 {
                     if (Qwords[i][j].IndexOf('[') >= 0)
@@ -105,7 +111,8 @@ namespace SortEnglish
                     Questions[i] += (Qwords[i][j] + " / ");
                 }
                 Questions[i] += ")";
-                if (Questions[i].IndexOf('^') >= 0) MessageBox.Show("");
+                if (Questions[i].IndexOf('^') >= 0) MessageBox.Show("error\n" + Questions[i]);
+                if (Ansers[i].IndexOf('^') >= 0) MessageBox.Show("error\n" + Ansers[i]);
             }
 
             listBox1.Items.Add("---ANSERS---");
