@@ -37,7 +37,7 @@ namespace SortEnglish
             {
                 name = dialog.FileName;
                 StreamReader file = new StreamReader(name);
-                while ((line = file.ReadLine()) != null)
+                while ((line = file.ReadLine()) != null && line.Length != 0)
                 {
                     InputSentence.Add(line);
                 }
@@ -101,7 +101,8 @@ namespace SortEnglish
                 for(int j = 0;j < words[i].Count;j++)
                     words[i][j] = words[i][j].Replace('^', ' ');
 
-                words[i][0] = words[i][0].Substring(0, 1).ToUpper() + words[i][0].Substring(1);
+                string inputword = words[i][0];
+                words[i][0] = words[i][0].Substring(0, 1).ToUpper() + words[i][0].Substring(1); //大文字にする
 
                 for (int j = 0; j < words[i].Count; j++)
                 {
@@ -114,6 +115,8 @@ namespace SortEnglish
                     if (j == words[i].Count - 1) Ansers[i] += endS[i];
                     else Ansers[i] += " ";
                 }
+
+                words[i][0] = inputword; //元に戻す
             }
         }
 
