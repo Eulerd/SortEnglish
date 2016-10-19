@@ -16,22 +16,22 @@ namespace SortEnglish
         /// <summary>
         /// 各入力文(List)を空白ごとに区切った(Array)、リスト配列
         /// </summary>
-        private List<string>[] words;
+        private List<List<string>> words;
 
         /// <summary>
         /// 各回答文リスト
         /// </summary>
-        private string[] Ansers;
+        private List<string> Ansers;
 
         /// <summary>
         /// 各問題文リスト
         /// </summary>
-        private string[] Questions;
+        private List<string> Questions;
 
         /// <summary>
         /// 各文に対応した句読点(.!?)
         /// </summary>
-        private string[] endS;
+        private List<string> endS;
 
         /// <summary>
         /// 読み込んだ文の数
@@ -71,20 +71,20 @@ namespace SortEnglish
             }
             length = InputSentence.Count;
             //文末の[. ? !]を保管しておく
-            endS = new string[length];
+            endS = new List<string>();
 
             for (int i = 0; i < length; i++)
             {
-                if (InputSentence[i].IndexOf(".") != -1) endS[i] = ".";
-                else if (InputSentence[i].IndexOf("?") != -1) endS[i] = "?";
-                else endS[i] = "!";
+                if (InputSentence[i].IndexOf(".") != -1) endS.Add(".");
+                else if (InputSentence[i].IndexOf("?") != -1) endS.Add("?");
+                else endS.Add("!");
 
                 int l = InputSentence[i].Length;
                 InputSentence[i] = InputSentence[i].Remove(l - 1);
             }
 
-            Ansers = new string[length];
-            Questions = new string[length];
+            Ansers = new List<string>();
+            Questions = new List<string>();
 
             // 入力されたテキストから問題と解答を取得
             inputS();
@@ -93,27 +93,31 @@ namespace SortEnglish
             Sorting();
 
             // 回答分を追加
+            string question;
             for (int i = 0; i < length; i++)
             {
-                Questions[i] += "Q." + (i + 1).ToString() + " 【 ";
+                question = "";
+                question += "Q." + (i + 1).ToString() + " 【 ";
                 for (int j = 0; j < words[i].Count; j++)
                 {
-                    Questions[i] += (words[i][j]);
-                    if (j == words[i].Count - 1) Questions[i] += " 】" + endS[i];
-                    else Questions[i] += " / ";
+                    question += (words[i][j]);
+                    if (j == words[i].Count - 1) question += " 】" + endS[i];
+                    else question += " / ";
                 }
                 
                 // 問題文取得が失敗していた場合、その文を表示する
-                if (Questions[i].IndexOf('^') >= 0) MessageBox.Show("error\n" + Questions[i]);
+                if (question.IndexOf('^') >= 0) MessageBox.Show("error\n" + question);
                 if (Ansers[i].IndexOf('^') >= 0) MessageBox.Show("error\n" + Ansers[i]);
+
+                Questions.Add(question);
             }
 
             // 取得した問題文回答分をフォームに表示
             listBox1.Items.Insert(0, "Question Count : " + length);
             listBox1.Items.Add("---ANSERS---");
-            listBox1.Items.AddRange(Ansers); //答えの文 
+            listBox1.Items.AddRange(Ansers.ToArray()); //答えの文 
             listBox1.Items.Add("---QUESTIONS---");
-            listBox1.Items.AddRange(Questions); //問題の文 
+            listBox1.Items.AddRange(Questions.ToArray()); //問題の文 
         }
 
         /// <summary>
@@ -121,14 +125,17 @@ namespace SortEnglish
         /// </summary>
         private void inputS()
         {
-            words = new List<string>[length];
+            words = new List<List<string>>();
+            string anser = "";
 
             for(int i = 0;i < length;i++)
             {
-                words[i] = new List<string>();
+                words.Add(new List<string>());
+                anser = "";
+
                 words[i].AddRange(InputSentence[i].Split(' '));
 
-                Ansers[i] += "A." + (i + 1).ToString() + " ";
+                anser += "A." + (i + 1).ToString() + " ";
 
                 for(int j = 0;j < words[i].Count;j++)
                     words[i][j] = words[i][j].Replace('^', ' ');
@@ -140,13 +147,15 @@ namespace SortEnglish
                 {
                     if (words[i][j].IndexOf("[") >= 0)
                     {
-                        Ansers[i] += words[i][j + 1];
+                        anser += words[i][j + 1];
                         words[i].Remove(words[i][j + 1]);
                     }
-                    else Ansers[i] += words[i][j];
-                    if (j == words[i].Count - 1) Ansers[i] += endS[i];
-                    else Ansers[i] += " ";
+                    else anser += words[i][j];
+                    if (j == words[i].Count - 1) anser += endS[i];
+                    else anser += " ";
                 }
+
+                Ansers.Add(anser);
 
                 words[i][0] = inputword; //元に戻す
             }
@@ -161,7 +170,7 @@ namespace SortEnglish
             Random r;
             int num1, num2;
 
-            for (int i = 0; i < words.Length; i++)
+            for (int i = 0; i < words.Count; i++)
             {
                 int l = words[i].Count;
 
@@ -196,11 +205,16 @@ namespace SortEnglish
 
 
         /// <summary>
-        /// ESCキーが押されたらプログラムを終了する
+        /// キー入力に応じて各イベントを発生させる
         /// </summary>
         private void listBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.Escape) this.Close();
+            // ESCキーが押されたらプログラムを終了する
+            if (e.KeyData == Keys.Escape)
+                this.Close();
+
+            if (e.KeyData == Keys.Delete)
+                ClearAll();
         }
 
         /// <summary>
@@ -250,14 +264,38 @@ namespace SortEnglish
         }
 
         /// <summary>
-        /// 問題と解答をすべて初期化する(未実装)
+        /// 問題と解答をすべて初期化する
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ClearToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            listBox1.Items.Clear();
-            InputSentence.Clear();
+            ClearAll();
+        }
+
+        /// <summary>
+        /// 全てを削除する
+        /// </summary>
+        private void ClearAll()
+        {
+            DialogResult result = MessageBox.Show("本当に削除しますか？", "確認",
+                 MessageBoxButtons.YesNoCancel,
+                 MessageBoxIcon.Exclamation,
+                 MessageBoxDefaultButton.Button2);
+
+            if (result == DialogResult.Yes)
+            {
+                listBox1.Items.Clear();
+                words.Clear();
+                InputSentence.Clear();
+                Questions.Clear();
+                Ansers.Clear();
+                endS.Clear();
+
+                length = 0;
+
+                listBox1.Refresh();
+            }
         }
 
         /// <summary>
