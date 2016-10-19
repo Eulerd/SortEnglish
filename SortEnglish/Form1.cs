@@ -8,13 +8,39 @@ namespace SortEnglish
 {
     public partial class Form1 : Form
     {
+        /// <summary>
+        /// ソースリストの読み込んだテキストファイル
+        /// </summary>
         private List<string> InputSentence = new List<string>();
+
+        /// <summary>
+        /// 各入力文(List)を空白ごとに区切った(Array)、リスト配列
+        /// </summary>
         private List<string>[] words;
+
+        /// <summary>
+        /// 各回答文リスト
+        /// </summary>
         private string[] Ansers;
+
+        /// <summary>
+        /// 各問題文リスト
+        /// </summary>
         private string[] Questions;
+
+        /// <summary>
+        /// 各文に対応した句読点(.!?)
+        /// </summary>
         private string[] endS;
+
+        /// <summary>
+        /// 読み込んだ文の数
+        /// </summary>
         private int length;
 
+        /// <summary>
+        /// フォームのメイン
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
@@ -46,6 +72,7 @@ namespace SortEnglish
             length = InputSentence.Count;
             //文末の[. ? !]を保管しておく
             endS = new string[length];
+
             for (int i = 0; i < length; i++)
             {
                 if (InputSentence[i].IndexOf(".") != -1) endS[i] = ".";
@@ -59,10 +86,13 @@ namespace SortEnglish
             Ansers = new string[length];
             Questions = new string[length];
 
+            // 入力されたテキストから問題と解答を取得
             inputS();
 
+            // 問題文をランダムに並び替える
             Sorting();
 
+            // 回答分を追加
             for (int i = 0; i < length; i++)
             {
                 Questions[i] += "Q." + (i + 1).ToString() + " 【 ";
@@ -73,10 +103,12 @@ namespace SortEnglish
                     else Questions[i] += " / ";
                 }
                 
+                // 問題文取得が失敗していた場合、その文を表示する
                 if (Questions[i].IndexOf('^') >= 0) MessageBox.Show("error\n" + Questions[i]);
                 if (Ansers[i].IndexOf('^') >= 0) MessageBox.Show("error\n" + Ansers[i]);
             }
 
+            // 取得した問題文回答分をフォームに表示
             listBox1.Items.Insert(0, "Question Count : " + length);
             listBox1.Items.Add("---ANSERS---");
             listBox1.Items.AddRange(Ansers); //答えの文 
@@ -122,7 +154,7 @@ namespace SortEnglish
 
 
         /// <summary>
-        /// 問題をランダムに並び替える
+        /// 問題を単語の数回ランダムに並び替える
         /// </summary>
         private void Sorting()
         {
@@ -145,15 +177,6 @@ namespace SortEnglish
 
                     Swap(num1, num2, i);
                 }
-
-                /*
-                if (words[i].IndexOf(".") != -1) num1 = words[i].IndexOf(".");
-                else if (words[i].IndexOf("?") != -1) num1 = words[i].IndexOf("?");
-                else num1 = words[i].IndexOf("!");
-                
-
-                if (num1 != l + 1) Swap(num1, l - 1, i);
-                */
             }
         }
 
@@ -234,6 +257,7 @@ namespace SortEnglish
         private void ClearToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listBox1.Items.Clear();
+            InputSentence.Clear();
         }
 
         /// <summary>
