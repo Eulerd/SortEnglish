@@ -42,6 +42,8 @@
             this.Japlabel = new System.Windows.Forms.Label();
             this.JapListBox = new System.Windows.Forms.ListBox();
             this.NumbersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NumListBox = new System.Windows.Forms.ListBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,7 +56,7 @@
             this.終了ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(634, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(718, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -114,16 +116,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.QuestionListBox.FormattingEnabled = true;
             this.QuestionListBox.ItemHeight = 12;
-            this.QuestionListBox.Location = new System.Drawing.Point(12, 39);
+            this.QuestionListBox.Location = new System.Drawing.Point(99, 39);
             this.QuestionListBox.Name = "QuestionListBox";
-            this.QuestionListBox.Size = new System.Drawing.Size(610, 148);
+            this.QuestionListBox.Size = new System.Drawing.Size(607, 148);
             this.QuestionListBox.TabIndex = 1;
             this.QuestionListBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox1_KeyDown);
             // 
             // Questlabel
             // 
             this.Questlabel.AutoSize = true;
-            this.Questlabel.Location = new System.Drawing.Point(12, 24);
+            this.Questlabel.Location = new System.Drawing.Point(97, 24);
             this.Questlabel.Name = "Questlabel";
             this.Questlabel.Size = new System.Drawing.Size(41, 12);
             this.Questlabel.TabIndex = 2;
@@ -132,7 +134,7 @@
             // Anserlabel
             // 
             this.Anserlabel.AutoSize = true;
-            this.Anserlabel.Location = new System.Drawing.Point(12, 190);
+            this.Anserlabel.Location = new System.Drawing.Point(97, 190);
             this.Anserlabel.Name = "Anserlabel";
             this.Anserlabel.Size = new System.Drawing.Size(41, 12);
             this.Anserlabel.TabIndex = 4;
@@ -144,15 +146,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.AnserListBox.FormattingEnabled = true;
             this.AnserListBox.ItemHeight = 12;
-            this.AnserListBox.Location = new System.Drawing.Point(12, 205);
+            this.AnserListBox.Location = new System.Drawing.Point(99, 205);
             this.AnserListBox.Name = "AnserListBox";
-            this.AnserListBox.Size = new System.Drawing.Size(610, 148);
+            this.AnserListBox.Size = new System.Drawing.Size(607, 148);
             this.AnserListBox.TabIndex = 3;
             // 
             // Japlabel
             // 
             this.Japlabel.AutoSize = true;
-            this.Japlabel.Location = new System.Drawing.Point(12, 356);
+            this.Japlabel.Location = new System.Drawing.Point(97, 356);
             this.Japlabel.Name = "Japlabel";
             this.Japlabel.Size = new System.Drawing.Size(29, 12);
             this.Japlabel.TabIndex = 6;
@@ -164,9 +166,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.JapListBox.FormattingEnabled = true;
             this.JapListBox.ItemHeight = 12;
-            this.JapListBox.Location = new System.Drawing.Point(12, 371);
+            this.JapListBox.Location = new System.Drawing.Point(99, 371);
             this.JapListBox.Name = "JapListBox";
-            this.JapListBox.Size = new System.Drawing.Size(610, 148);
+            this.JapListBox.Size = new System.Drawing.Size(607, 148);
             this.JapListBox.TabIndex = 5;
             // 
             // NumbersToolStripMenuItem
@@ -177,11 +179,31 @@
             this.NumbersToolStripMenuItem.Text = "番号";
             this.NumbersToolStripMenuItem.Click += new System.EventHandler(this.NumbersToolStripMenuItem_Click);
             // 
+            // NumListBox
+            // 
+            this.NumListBox.FormattingEnabled = true;
+            this.NumListBox.ItemHeight = 12;
+            this.NumListBox.Location = new System.Drawing.Point(12, 39);
+            this.NumListBox.Name = "NumListBox";
+            this.NumListBox.Size = new System.Drawing.Size(79, 472);
+            this.NumListBox.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(29, 12);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "番号";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(634, 528);
+            this.ClientSize = new System.Drawing.Size(718, 528);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.NumListBox);
             this.Controls.Add(this.Japlabel);
             this.Controls.Add(this.JapListBox);
             this.Controls.Add(this.Anserlabel);
@@ -215,6 +237,8 @@
         private System.Windows.Forms.ToolStripMenuItem EngToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem JapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NumbersToolStripMenuItem;
+        private System.Windows.Forms.ListBox NumListBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 

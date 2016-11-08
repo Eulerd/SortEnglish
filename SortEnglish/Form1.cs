@@ -276,14 +276,19 @@ namespace SortEnglish
                 QuestionListBox.Items.Clear();
                 AnserListBox.Items.Clear();
                 JapListBox.Items.Clear();
+                NumListBox.Items.Clear();
 
                 words.Clear();
                 InputEngSentence.Clear();
+                InputJapSentence.Clear();
+                InputNumbers.Clear();
                 Questions.Clear();
                 Ansers.Clear();
                 endS.Clear();
 
                 EngLength = 0;
+                JapLength = 0;
+                NumLength = 0;
 
                 QuestionListBox.Refresh();
             }
@@ -377,6 +382,8 @@ namespace SortEnglish
 
             NumLength = InputNumbers.Count;
             MessageBox.Show(NumLength + "個の番号を追加しました");
+
+            NumListBox.Items.AddRange(InputNumbers.ToArray());
         }
     }
 }
