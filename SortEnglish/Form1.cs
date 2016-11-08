@@ -9,9 +9,19 @@ namespace SortEnglish
     public partial class Form1 : Form
     {
         /// <summary>
-        /// ソースリストの読み込んだテキストファイル
+        /// ソースリストの読み込んだ英文テキストファイル
         /// </summary>
-        private List<string> InputSentence = new List<string>();
+        private List<string> InputEngSentence = new List<string>();
+
+        /// <summary>
+        /// ソースリストの読み込んだ和訳テキストファイル
+        /// </summary>
+        private List<string> InputJapSentence = new List<string>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private List<string> InputNumbers = new List<string>();
 
         /// <summary>
         /// 各入力文(List)を空白ごとに区切った(Array)、リスト配列
@@ -34,9 +44,19 @@ namespace SortEnglish
         private List<string> endS;
 
         /// <summary>
-        /// 読み込んだ文の数
+        /// 読み込んだ英文の数
         /// </summary>
-        private int length;
+        private int EngLength = 0;
+
+        /// <summary>
+        /// 読み込んだ和訳の数
+        /// </summary>
+        private int JapLength = 0;
+
+        /// <summary>
+        /// 読み込んだ番号の数
+        /// </summary>
+        private int NumLength = 0;
 
         /// <summary>
         /// フォームのメイン
@@ -46,18 +66,16 @@ namespace SortEnglish
             InitializeComponent();
         }
 
-        /// <summary>
-        /// ファイルを開いてその内容を問題と解答にする
-        /// </summary>
-        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
+        private List<string> GetTextToFile(string title)
         {
+            List<string> list = new List<string>();
             string name, line;
 
             FileDialog dialog = new OpenFileDialog
             {
                 DefaultExt = "*.txt",
                 Filter = "テキストファイル|*.txt|すべてのファイル|*.*",
-                Title = "英文テキストを開く",
+                Title = title,
             };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -65,59 +83,11 @@ namespace SortEnglish
                 StreamReader file = new StreamReader(name);
                 while ((line = file.ReadLine()) != null && line.Length != 0)
                 {
-                    InputSentence.Add(line);
+                    list.Add(line);
                 }
-                MessageBox.Show(InputSentence.Count + "の文章を追加しました");
-            }
-            length = InputSentence.Count;
-            //文末の[. ? !]を保管しておく
-            endS = new List<string>();
-
-            for (int i = 0; i < length; i++)
-            {
-                if (InputSentence[i].IndexOf(".") != -1) endS.Add(".");
-                else if (InputSentence[i].IndexOf("?") != -1) endS.Add("?");
-                else endS.Add("!");
-
-                int l = InputSentence[i].Length;
-                InputSentence[i] = InputSentence[i].Remove(l - 1);
             }
 
-            Ansers = new List<string>();
-            Questions = new List<string>();
-
-            // 入力されたテキストから問題と解答を取得
-            inputS();
-
-            // 問題文をランダムに並び替える
-            Sorting();
-
-            // 回答分を追加
-            string question;
-            for (int i = 0; i < length; i++)
-            {
-                question = "";
-                question += "Q." + (i + 1).ToString() + " 【 ";
-                for (int j = 0; j < words[i].Count; j++)
-                {
-                    question += (words[i][j]);
-                    if (j == words[i].Count - 1) question += " 】" + endS[i];
-                    else question += " / ";
-                }
-                
-                // 問題文取得が失敗していた場合、その文を表示する
-                if (question.IndexOf('^') >= 0) MessageBox.Show("error\n" + question);
-                if (Ansers[i].IndexOf('^') >= 0) MessageBox.Show("error\n" + Ansers[i]);
-
-                Questions.Add(question);
-            }
-
-            // 取得した問題文回答分をフォームに表示
-            listBox1.Items.Insert(0, "Question Count : " + length);
-            listBox1.Items.Add("---ANSERS---");
-            listBox1.Items.AddRange(Ansers.ToArray()); //答えの文 
-            listBox1.Items.Add("---QUESTIONS---");
-            listBox1.Items.AddRange(Questions.ToArray()); //問題の文 
+            return list;
         }
 
         /// <summary>
@@ -128,12 +98,12 @@ namespace SortEnglish
             words = new List<List<string>>();
             string anser = "";
 
-            for(int i = 0;i < length;i++)
+            for(int i = 0;i < EngLength;i++)
             {
                 words.Add(new List<string>());
                 anser = "";
 
-                words[i].AddRange(InputSentence[i].Split(' '));
+                words[i].AddRange(InputEngSentence[i].Split(' '));
 
                 anser += "A." + (i + 1).ToString() + " ";
 
@@ -223,43 +193,61 @@ namespace SortEnglish
         /// </summary>
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dialog = new SaveFileDialog()
+            if (JapLength == 0)
+                MessageBox.Show("和訳が読み込まれていません。");
+            else if (EngLength == 0)
+                MessageBox.Show("英文が読み込まれていません。");
+            else if (NumLength == 0)
+                MessageBox.Show("番号が読み込まれていません。");
+            else if (EngLength != JapLength)
+                MessageBox.Show("英文と和訳の数が一致していません。\r\n取得に失敗している場合があります。");
+            else if (NumLength != EngLength)
+                MessageBox.Show("読み込まれた番号の数が文章の数と一致しません");
+            else
             {
-                DefaultExt = "*.txt",
-                Filter = "テキストファイル|*.txt|すべてのファイル|*.*",
-                FileName = "Problem",
-                Title = "英文並び替え問題を保存",
-            };
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                // -4は".txt"分戻すため
-                string Aname = dialog.FileName.Insert(dialog.FileName.Length - 4, "-Anser");
-                string Qname = dialog.FileName.Insert(dialog.FileName.Length - 4, "-Question");
-
-                StreamWriter Anserwriter
-                    = new StreamWriter(Aname, false, Encoding.GetEncoding("UTF-8"));
-                StreamWriter Questionwriter
-                    = new StreamWriter(Qname, false, Encoding.GetEncoding("UTF-8"));
-                StreamWriter writer 
-                    = new StreamWriter(dialog.FileName, false, Encoding.GetEncoding("UTF-8"));
-                foreach (string Q in Questions)
+                SaveFileDialog dialog = new SaveFileDialog()
                 {
-                    writer.WriteLine(Q);
-                    Questionwriter.WriteLine(Q);
-                }
-
-                writer.WriteLine();
-
-                foreach(string A in Ansers)
+                    DefaultExt = "*.txt",
+                    Filter = "テキストファイル|*.txt|すべてのファイル|*.*",
+                    FileName = "Problem",
+                    Title = "英文並び替え問題を保存",
+                };
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    writer.WriteLine(A);
-                    Anserwriter.WriteLine(A);
-                }
+                    // -4は".txt"分戻すため
+                    string Aname = dialog.FileName.Insert(dialog.FileName.Length - 4, "-Anser");
+                    string Qname = dialog.FileName.Insert(dialog.FileName.Length - 4, "-Question");
 
-                writer.Close();
-                Questionwriter.Close();
-                Anserwriter.Close();
-                MessageBox.Show("保存しました");
+                    StreamWriter Anserwriter
+                        = new StreamWriter(Aname, false, Encoding.GetEncoding("UTF-8"));
+                    StreamWriter Questionwriter
+                        = new StreamWriter(Qname, false, Encoding.GetEncoding("UTF-8"));
+                    StreamWriter writer
+                        = new StreamWriter(dialog.FileName, false, Encoding.GetEncoding("UTF-8"));
+                    for (int i = 0; i < Questions.Count; i++)
+                    {
+                        writer.WriteLine(InputNumbers[i] + " " + InputJapSentence[i]);
+                        writer.WriteLine(Questions[i]);
+                        writer.WriteLine();
+
+                        Questionwriter.WriteLine(InputJapSentence[i]);
+                        Questionwriter.WriteLine(Questions[i]);
+                        Questionwriter.WriteLine();
+                    }
+
+                    writer.WriteLine();
+
+                    foreach (string A in Ansers)
+                    {
+                        writer.WriteLine(A);
+                        Anserwriter.WriteLine(A);
+                    }
+
+                    writer.Close();
+                    Questionwriter.Close();
+                    Anserwriter.Close();
+                    MessageBox.Show("保存しました");
+                }
             }
         }
 
@@ -285,16 +273,19 @@ namespace SortEnglish
 
             if (result == DialogResult.Yes)
             {
-                listBox1.Items.Clear();
+                QuestionListBox.Items.Clear();
+                AnserListBox.Items.Clear();
+                JapListBox.Items.Clear();
+
                 words.Clear();
-                InputSentence.Clear();
+                InputEngSentence.Clear();
                 Questions.Clear();
                 Ansers.Clear();
                 endS.Clear();
 
-                length = 0;
+                EngLength = 0;
 
-                listBox1.Refresh();
+                QuestionListBox.Refresh();
             }
         }
 
@@ -306,6 +297,86 @@ namespace SortEnglish
         private void EndToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        /// <summary>
+        /// 英文ファイルを開いてその内容を問題と解答にする
+        /// </summary>
+        private void EngToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InputEngSentence = GetTextToFile("英文テキストを開く");
+
+            EngLength = InputEngSentence.Count;
+
+            MessageBox.Show(EngLength + "の文章を追加しました");
+
+            //文末の[. ? !]を保管しておく
+            endS = new List<string>();
+
+            for (int i = 0; i < EngLength; i++)
+            {
+                if (InputEngSentence[i].IndexOf(".") != -1) endS.Add(".");
+                else if (InputEngSentence[i].IndexOf("?") != -1) endS.Add("?");
+                else endS.Add("!");
+
+                int l = InputEngSentence[i].Length;
+                InputEngSentence[i] = InputEngSentence[i].Remove(l - 1);
+            }
+
+            Ansers = new List<string>();
+            Questions = new List<string>();
+
+            // 入力されたテキストから問題と解答を取得
+            inputS();
+
+            // 問題文をランダムに並び替える
+            Sorting();
+
+            // 回答分を追加
+            string question;
+            for (int i = 0; i < EngLength; i++)
+            {
+                question = "";
+                question += "     【 ";
+                for (int j = 0; j < words[i].Count; j++)
+                {
+                    question += (words[i][j]);
+                    if (j == words[i].Count - 1) question += " 】" + endS[i];
+                    else question += " / ";
+                }
+
+                // 問題文取得が失敗していた場合、その文を表示する
+                if (question.IndexOf('^') >= 0) MessageBox.Show("error\n" + question);
+                if (Ansers[i].IndexOf('^') >= 0) MessageBox.Show("error\n" + Ansers[i]);
+
+                Questions.Add(question);
+            }
+
+            // 取得した問題文回答分をフォームに表示
+            //QuestionListBox.Items.Insert(0, "Question Count : " + length);
+            AnserListBox.Items.AddRange(Ansers.ToArray()); //答えの文 
+
+            QuestionListBox.Items.AddRange(Questions.ToArray()); //問題の文 
+        }
+
+        private void JapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InputJapSentence = GetTextToFile("和訳テキストを開く");
+
+            JapLength = InputJapSentence.Count;
+
+            MessageBox.Show(JapLength + "の文章を追加しました");
+
+            // リストボックスに追加
+            JapListBox.Items.AddRange(InputJapSentence.ToArray());
+        }
+
+        private void NumbersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InputNumbers = GetTextToFile("番号テキストを開く");
+
+            NumLength = InputNumbers.Count;
+            MessageBox.Show(NumLength + "個の番号を追加しました");
         }
     }
 }
