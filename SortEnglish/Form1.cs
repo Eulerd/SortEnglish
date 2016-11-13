@@ -105,8 +105,6 @@ namespace SortEnglish
 
                 words[i].AddRange(InputEngSentence[i].Split(' '));
 
-                anser += "A." + (i + 1).ToString() + " ";
-
                 for(int j = 0;j < words[i].Count;j++)
                     words[i][j] = words[i][j].Replace('^', ' ');
 
@@ -230,17 +228,17 @@ namespace SortEnglish
                         writer.WriteLine(Questions[i]);
                         writer.WriteLine();
 
-                        Questionwriter.WriteLine(InputJapSentence[i]);
+                        Questionwriter.WriteLine(InputNumbers[i] + " " + InputJapSentence[i]);
                         Questionwriter.WriteLine(Questions[i]);
                         Questionwriter.WriteLine();
                     }
 
                     writer.WriteLine();
 
-                    foreach (string A in Ansers)
-                    {
-                        writer.WriteLine(A);
-                        Anserwriter.WriteLine(A);
+                    for(int i = 0;i < Ansers.Count;i++)
+                    { 
+                        writer.WriteLine(InputNumbers[i] + Ansers[i]);
+                        Anserwriter.WriteLine(InputNumbers[i] + Ansers[i]);
                     }
 
                     writer.Close();
@@ -320,12 +318,16 @@ namespace SortEnglish
 
             for (int i = 0; i < EngLength; i++)
             {
-                if (InputEngSentence[i].IndexOf(".") != -1) endS.Add(".");
+                if (InputEngSentence[i].IndexOf(".\"") != -1) endS.Add(".\"");
+                else if (InputEngSentence[i].IndexOf(".") != -1) endS.Add(".");
                 else if (InputEngSentence[i].IndexOf("?") != -1) endS.Add("?");
                 else endS.Add("!");
 
                 int l = InputEngSentence[i].Length;
-                InputEngSentence[i] = InputEngSentence[i].Remove(l - 1);
+                if (InputEngSentence[i].IndexOf(".\"") != -1)
+                    InputEngSentence[i] = InputEngSentence[i].Remove(l - 2);
+                else
+                    InputEngSentence[i] = InputEngSentence[i].Remove(l - 1);
             }
 
             Ansers = new List<string>();

@@ -69,8 +69,8 @@
             this.OpenToolStripMenuItem.Name = "OpenToolStripMenuItem";
             this.OpenToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+O";
             this.OpenToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.OpenToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
-            this.OpenToolStripMenuItem.Text = "開く";
+            this.OpenToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.OpenToolStripMenuItem.Text = "テキスト入力";
             // 
             // EngToolStripMenuItem
             // 
